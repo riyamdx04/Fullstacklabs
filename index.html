@@ -4,9 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <h1>heya</h1>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 </head>
 <body>
-    
+    <div id="petstore" >
+        <div v-if="product.showProduct">
+           <h1>{{message}}</h1>
+        <img v-bind:src = product.image >
+        <br>
+        <button @click="ShowCheckout">Checkout {{cartItemCount}}</button>
+        <!-- check if there is security issues with v-text -->
+        <h2 v-text="product.id"></h2>
+        <p v-text="product.title"></p>
+        <p v-text="product.description"></p>
+        <p>Price: {{product.price}}</p>
+        <p>Available stock: {{product.availability}}</p>
+        <button @click="AddToCart()" v-bind:disabled="!canAddToCart"> Add to cart</button>
+        </div>
+       <div v-else>
+                <h1>Checkout page</h1>
+                <button @click="ShowCheckout">return to product page</button>
+        </div>
+    </div>
+
+    <script>
+        const {createApp} = Vue
+        const myApp1 = Vue.createApp({
+            data(){
+                return{
+                    message: 'welcome to my petstore',
+                    product:{
+                        id:1101,
+                        title: 'Best cat food',
+                        description:'cat food',
+                        price: 2000,
+                        availability:5,
+                        showProduct: true,
+                        image:"images/product-fullsize.png"
+                    },
+                    cart:[],
+                }
+            },
+            methods:{
+                updateStock(){
+                    this.availability -=this.availability
+                },
+                AddToCart(){
+                    this.cart.push(this.product.id)
+
+                },
+                ShowCheckout(){
+                    this.showProduct= this.showProduct? false: true;
+                }
+            },
+            computed:{
+                cartItemCount: function(){
+                    return this.cart.length;
+                },
+                canAddToCart: function(){
+                    return this.product.availability > this.cartItemCount;
+                }
+            }
+        })
+        myApp1.mount('#petstore')
+    </script>
 </body>
 </html>
